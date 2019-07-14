@@ -32,4 +32,31 @@ RSpec.describe 'chat app api', type: :request do
       expect(json['token']).to eq(chat_app_token)
     end
   end
+
+  describe "Post /application/" do
+
+    context 'when the request is valid' do
+      before {post "/application/", params: {name: 'app', token: 1093}}
+      it 'returns status code 200' do
+        expect(response).to have_http_status(201)
+      end
+      it 'returns chat_app by token' do
+        expect(json['token']).to eq(1093)
+      end
+    end
+
+    context 'when the request is invalid' do
+      before {post "/application/", params: {name: nil}}
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status(422)
+      end
+      it 'returns a validation failure message' do
+        puts response.body
+        expect(response.body)
+            .to match("Validation failed: ame can't be blank")
+      end
+    end
+
+  end
 end
