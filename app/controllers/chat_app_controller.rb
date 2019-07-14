@@ -2,19 +2,20 @@ class ChatAppController < ApplicationController
 
   # POST /application
   def create
-    chat_app_params[:token] = ChatApp.all.count+1
-    puts chat_app_params
-    @todo = ChatApp.create!(chat_app_params)
-    json_response(@todo, :created)
+    if params and params[:app]
+      params[:app][:token] = (ChatApp.all.count + 1)
+    end
+    @chat_app = ChatApp.create!(chat_app_params)
+    json_response(@chat_app, :created)
   end
 
-  # GET /applications
+# GET /applications
   def index
     @chat_apps = ChatApp.all
     json_response(@chat_apps)
   end
 
-  # GET /application/:id
+# GET /application/:id
   def show
     set_chat_app
     json_response(@chat_app)
@@ -25,10 +26,13 @@ class ChatAppController < ApplicationController
 
   def chat_app_params
     # whitelist params
-    params.require(:name)
+    if params and params[:app]
+      params.require(:app).permit(:name, :token)
+    end
   end
 
   def set_chat_app
     @chat_app = ChatApp.find_chat_app(params[:id])
   end
+
 end
