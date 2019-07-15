@@ -1,6 +1,10 @@
 module Response
   def json_response(object, status = :ok)
-    render json: object.as_json(:except => :id), status: status
+    if object == nil
+      render json: {message: 'not fond'}, status: :not_found
+    else
+      render json: object.as_json(:except => :id), status: status
+    end
   end
 end
 
