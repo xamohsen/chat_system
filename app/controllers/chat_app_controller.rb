@@ -32,7 +32,7 @@ class ChatAppController < ApplicationController
   end
 
   def set_chat_app
-    @chat_app = ChatApp.find_chat_app(params[:id])
+    @chat_app = ChatApp.find_chat_app(params[:token])
   end
 
 end
