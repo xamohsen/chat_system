@@ -85,6 +85,10 @@ RSpec.describe ChatController, type: :request do
       it 'returns status code 200' do
         expect(response).to have_http_status(201)
       end
+      it 'should update chat_app chats count' do
+        @temp_chat_app = ChatApp.find @temp_chat_app[:id]
+        expect(@temp_chat_app[:chats_count]).to eq(1)
+      end
       it 'returns chat_app name and token +1 after creation' do
         expect(json['messages_count']).to eq(0)
         expect(json['number']).to eq(1)

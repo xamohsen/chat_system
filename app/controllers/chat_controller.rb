@@ -20,6 +20,7 @@ class ChatController < ApplicationController
         params[:chat][:messages_count] = 0
       end
       @chat = Chat.create!(chat_params)
+      @chat_app.update(chats_count: (@chat_app[:chats_count] + 1));
     end
     json_response(@chat, :created)
   end

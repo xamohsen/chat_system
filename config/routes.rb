@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   post '/chat/', to: 'chat#create'
 
 
-  get '/application/:token', to: 'chat_app#show'
+  get '/applications/:token', to: 'chat_app#show'
   get '/applications/', to: 'chat_app#index'
   post '/application/', to: 'chat_app#create'
 end

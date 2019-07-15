@@ -4,6 +4,7 @@ class ChatAppController < ApplicationController
   def create
     if params and params[:app]
       params[:app][:token] = (ChatApp.all.count + 1)
+      params[:app][:chats_count] = 0
     end
     @chat_app = ChatApp.create!(chat_app_params)
     json_response(@chat_app, :created)
@@ -27,7 +28,7 @@ class ChatAppController < ApplicationController
   def chat_app_params
     # whitelist params
     if params and params[:app]
-      params.require(:app).permit(:name, :token)
+      params.require(:app).permit(:name, :token, :chats_count)
     end
   end
 

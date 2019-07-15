@@ -8,9 +8,7 @@ module Response
   end
 end
 
-#app/controller/concerns/exception_handler.rb
 module ExceptionHandler
-  # provides the more graceful `included` method
   extend ActiveSupport::Concern
   included do
     rescue_from ActiveRecord::RecordNotFound do |e|

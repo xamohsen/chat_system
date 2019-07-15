@@ -30,11 +30,11 @@ RSpec.describe 'chat app api', type: :request do
     end
   end
 
-  describe "GET /application/id" do
+  describe "GET /applications/id" do
     before (:all) do
       get '/applications'
     end
-    before {get "/application/#{@chat_app_token}"}
+    before {get "/applications/#{@chat_app_token}"}
     it 'returns status code 200' do
       expect(response).to have_http_status(200)
     end
@@ -55,14 +55,16 @@ RSpec.describe 'chat app api', type: :request do
       it 'returns status code 200' do
         expect(response).to have_http_status(201)
       end
-      it 'returns chat_app name and token +1 after creation' do
+      it 'returns chat_app name, chats_count and token +1 after creation' do
         expect(json['token']).to eq(@apps_number + 1)
         expect(json['name']).to eq('app#1')
+        expect(json['chats_count']).to eq(0)
       end
-      it 'returns chat_app name and token +2  after creating another app' do
+      it 'returns chat_app name, chats_count and token +2  after creating another app' do
         post "/application/", params: {app: {name: 'app#2'}}
         expect(json['token']).to eq(@apps_number + 2)
         expect(json['name']).to eq('app#2')
+        expect(json['chats_count']).to eq(0)
       end
       it 'should not return the app id' do
         expect(json['id']).to eq(nil)
