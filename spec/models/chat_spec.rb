@@ -22,4 +22,8 @@ RSpec.describe Chat, type: :model do
   end
   it {should validate_presence_of(:number)}
   it {should validate_presence_of(:messages_count)}
+  describe "Associations" do
+    it {should have_many(:messages)}
+    it {should belong_to(:chat_app)}
+  end
 end

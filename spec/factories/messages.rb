@@ -1,6 +1,6 @@
 FactoryBot.define do
-  factory :chat do
+  factory :message do
     number {rand(1000000)}
-    messages_count {0}
+    text {"text message body"}
   end
 end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 
-def initialize_data
+def initialize_chat_data
   @temp_chat_app = FactoryBot.create(:chat_app)
   100.times do
     FactoryBot.create :chat, chat_app_id: @temp_chat_app[:id]
@@ -11,14 +11,14 @@ end
 RSpec.describe ChatController, type: :request do
 
   describe "GET" do
-    before (:all) do
-      initialize_data
+    before :all do
+      initialize_chat_data
     end
     describe 'GET /applications/token/chats' do
-      before (:all) do
+      before :all do
         get "/applications/#{@temp_chat_app[:token]}/chats"
       end
-      it 'returns chat_apps' do
+      it 'returns chats' do
         expect(json).not_to be_empty
         expect(json.size).to eq(100)
       end
@@ -26,13 +26,13 @@ RSpec.describe ChatController, type: :request do
         expect(response).to have_http_status(200)
       end
       it 'should not return the apps id' do
-        json.each {|app| expect(app['id']).to eq(nil)}
+        json.each {|chat| expect(chat['id']).to eq(nil)}
       end
     end
 
     describe "GET /applications/:token/chats/:number" do
       context 'when the request is valid' do
-        before (:all) do
+        before :all do
           @chat = FactoryBot.create :chat, chat_app_id: @temp_chat_app[:id]
           get "/applications/#{@temp_chat_app[:token]}/chats/#{@chat[:number]}"
         end
@@ -48,7 +48,7 @@ RSpec.describe ChatController, type: :request do
           expect(json["id"]).to eq(nil)
         end
 
-        after (:all) do
+        after :all do
           Chat.delete_all
         end
       end

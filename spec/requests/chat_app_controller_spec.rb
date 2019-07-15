@@ -1,21 +1,19 @@
 require 'rails_helper'
 
 
-def initialize_data
+def initialize_app_data
   @apps_number = 10
   @chat_apps = create_list :chat_app, @apps_number
   @chat_app_token = @chat_apps.first.token
 end
 
 RSpec.describe 'chat app api', type: :request do
-  before (:all) do
-    @apps_number = 10
-    @chat_apps = create_list :chat_app, @apps_number
-    @chat_app_token = @chat_apps.first.token
+  before :all do
+    initialize_app_data
   end
 
   describe 'GET /applications' do
-    before (:all) do
+    before :all do
       get '/applications'
     end
     it 'returns chat_apps' do
@@ -31,7 +29,7 @@ RSpec.describe 'chat app api', type: :request do
   end
 
   describe "GET /applications/id" do
-    before (:all) do
+    before :all do
       get '/applications'
     end
     before {get "/applications/#{@chat_app_token}"}
@@ -49,7 +47,7 @@ RSpec.describe 'chat app api', type: :request do
   describe "Post /application/" do
 
     context 'when the request is valid' do
-      before (:each) do
+      before :all do
         post "/application/", params: {app: {name: 'app#1'}}
       end
       it 'returns status code 200' do
@@ -69,7 +67,7 @@ RSpec.describe 'chat app api', type: :request do
       it 'should not return the app id' do
         expect(json['id']).to eq(nil)
       end
-      after (:each) do
+      after :each do
         ChatApp.delete_all
       end
     end

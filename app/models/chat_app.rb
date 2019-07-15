@@ -1,5 +1,9 @@
 class ChatApp < ApplicationRecord
-  has_many :chats, :class_name => "Chat", :foreign_key => "chat_app_id",dependent: :destroy
+  has_many :chats,
+           class_name: "Chat",
+           foreign_key: "chat_app_id",
+           dependent: :destroy,
+           through: :messages
 
   validates_presence_of :name, :token
 
