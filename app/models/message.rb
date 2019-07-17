@@ -17,6 +17,7 @@ class Message < ApplicationRecord
                                 {
                                     multi_match: {
                                         query: query[:text],
+                                        fields: [:text]
                                     }
                                 },
                                 {
