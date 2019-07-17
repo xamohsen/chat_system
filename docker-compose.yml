@@ -5,6 +5,7 @@ services:
   app:
     depends_on:
       - db
+      - elasticsearch
     build: .
     ports:
       - "3000:3000"
@@ -24,3 +25,8 @@ services:
       MYSQL_DATABASE: chat_system
     ports:
       - "3307:3306"
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
+    hostname: elasticsearch
+    ports:
+      - "9200:9200"

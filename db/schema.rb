@@ -10,31 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_15_231212) do
+ActiveRecord::Schema.define(version: 2019_07_17_003710) do
 
   create_table "chat_apps", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
     t.integer "token"
     t.string "name"
+    t.integer "chats_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "chats_count"
+    t.index ["token"], name: "index_chat_apps_on_token", unique: true
   end
 
   create_table "chats", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
     t.integer "messages_count"
-    t.integer "number"
+    t.integer "chat_number"
+    t.integer "app_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "chat_app_id"
+    t.index ["app_token"], name: "index_chats_on_app_token"
+    t.index ["chat_number"], name: "index_chats_on_chat_number"
   end
 
   create_table "messages", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
     t.text "text"
-    t.integer "chat_id"
-    t.integer "number"
+    t.integer "message_number"
+    t.integer "app_token"
+    t.integer "chat_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "chat_app_id"
+    t.index ["app_token"], name: "index_messages_on_app_token"
+    t.index ["chat_number"], name: "index_messages_on_chat_number"
+    t.index ["message_number"], name: "index_messages_on_message_number"
   end
 
 end

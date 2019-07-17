@@ -1,26 +1,22 @@
 class ChatController < ApplicationController
-  # GET /applications/:token/chats
+  # GET /applications/:app_token/chats
   def index
-    @chats = Chat.joins(:chat_app).where(chat_apps: {token: params[:token]})
+    @chats = Chat.where(app_token: params[:app_token])
     json_response(@chats)
   end
 
-  # GET /applications/:token/chats/:number
+  # GET /applications/:app_token/chats/:chat_number
   def show
-    @chat = Chat.where(number: params[:number]).joins(:chat_app).where(chat_apps: {token: params[:token]}).first
+    @chat = Chat.where(chat_number: params[:chat_number], app_token: params[:app_token]).first
     json_response(@chat)
   end
 
   def create
     if params and params[:chat]
-      @chat_app = ChatApp.where(token: params[:chat][:chat_app_token]).first
-      if @chat_app != nil
-        params[:chat][:chat_app_id] = @chat_app[:id]
-        params[:chat][:number] = Chat.where(:chat_app_id => @chat_app[:id]).count + 1
-        params[:chat][:messages_count] = 0
-      end
+      params[:chat][:chat_number] = (Chat.count + 1)
+      params[:chat][:messages_count] = 0
       @chat = Chat.create!(chat_params)
-      @chat_app.update(chats_count: (@chat_app[:chats_count] + 1));
+      @chat.chat_app.update(chats_count: (@chat.chat_app[:chats_count] + 1))
     end
     json_response(@chat, :created)
   end
@@ -30,7 +26,7 @@ class ChatController < ApplicationController
   def chat_params
     # whitelist params
     if params and params[:chat]
-      params.require(:chat).permit(:chat_app_id, :number, :messages_count)
+      params.require(:chat).permit(:app_token, :chat_number, :messages_count)
     end
   end
 end

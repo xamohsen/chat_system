@@ -11,7 +11,7 @@ RUN mkdir /chat_system
 WORKDIR /chat_system
 COPY Gemfile Gemfile.lock ./
 
-RUN bundle install --binstubs
+RUN bundle install
 
 COPY . .
 
