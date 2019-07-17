@@ -10,6 +10,17 @@ class ChatAppController < ApplicationController
     json_response(@chat_app, :created)
   end
 
+
+  def update
+    if params and params[:app]
+      @chat_app = ChatApp.find_by token: params[:app][:token]
+      @chat_app.update(name: params[:app][:name])
+      json_response(@chat_app, :ok)
+    else
+      json_response(nil, :not_found)
+    end
+  end
+
 # GET /applications
   def index
     @chat_apps = ChatApp.all

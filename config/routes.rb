@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get '/applications/:app_token/chats/:chat_number/messages/:message_number', to: 'message#show'
   post '/message/', to: 'message#create'
   get '/messages/search/:app_token/:chat_number/:text', to: 'message#search'
+  put '/message/', to: 'chat#update'
 
   #chats routs
   get '/applications/:app_token/chats', to: 'chat#index'
@@ -16,4 +17,6 @@ Rails.application.routes.draw do
   get '/applications/:token', to: 'chat_app#show'
   get '/applications/', to: 'chat_app#index'
   post '/application/', to: 'chat_app#create'
+  put '/application/', to: 'chat_app#update'
+
 end

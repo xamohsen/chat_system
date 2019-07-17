@@ -32,6 +32,19 @@ class MessageController < ApplicationController
     end
   end
 
+  def update
+    if params and params[:message]
+      @message = Message.where app_token: params[:message][:app_token],
+                               chat_number: params[:message][:chat_number],
+                               message_number: params[:message][:message_number]
+
+      @message.update(text: params[:message][:text])
+      json_response(@message, :ok)
+    else
+      json_response(nil, :not_found)
+    end
+  end
+
   def message_params
     # whitelist params
     if params and params[:message]

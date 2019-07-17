@@ -93,6 +93,27 @@ RSpec.describe 'chat app api', type: :request do
     end
   end
 
+  describe "Put /application/" do
+    context 'when the request is valid' do
+      before :all do
+        @app = create :chat_app
+        put "/application/", params: {app: {token: @app[:token], name: 'app test #1'}}
+      end
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+      it 'returns chat_app name, chats_count and token +1 after creation' do
+        expect(json['name']).to eq('app test #1')
+      end
+      it 'should not return the app id' do
+        expect(json['id']).to eq(nil)
+      end
+      after :each do
+        ChatApp.delete_all
+      end
+    end
+  end
+
   after(:all) do
     ChatApp.delete_all
   end
