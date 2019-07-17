@@ -2,8 +2,9 @@ FROM ruby:2.5
 
 RUN apt-get update && \
     apt-get install -y nodejs \
-                       vim \
-                       --no-install-recommends && \
+    netcat \
+    vim \
+    --no-install-recommends && \
     apt-cache search mysql-server &&\
     rm -rf /var/lib/apt/lists/*
 
