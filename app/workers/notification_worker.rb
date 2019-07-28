@@ -8,7 +8,7 @@ class NotificationWorker
     retries = 0
     begin
       message = JSON.parse(message)
-      @data=  message["data"]
+      @data = message["data"]
       app = send(message['method'])
       puts "App:  ", app
     rescue Exception => e
@@ -26,6 +26,13 @@ class NotificationWorker
 
   def create_application
     ChatApp.create @data
+  end
+
+  def create_chat
+    chat = Chat.create @data
+    app = ChatApp.find_by(:token => chat[:app_token])
+    app.update(chats_count: app[:chats_count] + 1)
+    chat
   end
 
 end

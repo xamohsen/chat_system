@@ -12,16 +12,36 @@ class ChatController < ApplicationController
   end
 
   def create
-    if params and params[:chat]
-      params[:chat][:chat_number] = (Chat.count + 1)
-      params[:chat][:messages_count] = 0
-      @chat = Chat.create!(chat_params)
-      @chat.chat_app.update(chats_count: (@chat.chat_app[:chats_count] + 1))
+    if validate_create_request params
+      chat = generate_chat_object params
+
+      messaging_service.publish ({:data => chat, :method => "create_chat"}.to_json)
+      json_response(chat, :created)
+    else
+      json_response(nil, :not_found)
     end
-    json_response(@chat, :created)
   end
 
   private
+
+  def validate_create_request(params)
+    return params != nil && params[:chat] != nil && params[:chat][:app_token] != nil
+  end
+
+  def get_app_chats_count (params)
+    application_chats_count = "chat:#{params[:chat][:app_token]}"
+    if $redis.get(application_chats_count) == nil
+      $redis.set(application_chats_count, ChatApp.find_by(:token => params[:chat][:app_token]).chats_count)
+    end
+    $redis.incr(application_chats_count)
+    $redis.get(application_chats_count).to_i
+  end
+
+  def generate_chat_object(params)
+    params[:chat][:chat_number] = get_app_chats_count params
+    params[:chat][:messages_count] = 0
+    params[:chat]
+  end
 
   def chat_params
     # whitelist params
