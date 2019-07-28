@@ -5,7 +5,7 @@ class ChatAppController < ApplicationController
     if validate_create_request params
       application = generate_application_object params
 
-      messaging_service.publish(application.to_json)
+      messaging_service.publish({:data => application, :method => "create_application"}.to_json)
       json_response(application, :created)
     else
       json_response(nil, :created)

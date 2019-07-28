@@ -4,12 +4,12 @@ class NotificationWorker
   include Sneakers::Worker
   from_queue "notification"
 
-  def work(data)
+  def work(message)
     retries = 0
     begin
-      data = JSON.parse(data)
-      puts "Data: ", data
-      app = ChatApp.create data
+      message = JSON.parse(message)
+      @data=  message["data"]
+      app = send(message['method'])
       puts "App:  ", app
     rescue Exception => e
       if retries < 10
@@ -22,6 +22,10 @@ class NotificationWorker
       end
     end
     ack!
+  end
+
+  def create_application
+    ChatApp.create @data
   end
 
 end
