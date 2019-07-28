@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(version: 2019_07_17_003710) do
   create_table "chat_apps", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
     t.integer "token"
     t.string "name"
-    t.integer "chats_count"
+    t.integer "chats_count", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["token"], name: "index_chat_apps_on_token", unique: true

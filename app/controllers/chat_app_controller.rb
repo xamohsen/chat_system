@@ -3,23 +3,13 @@ class ChatAppController < ApplicationController
   # POST /application
   def create
     if validate_create_request params
-      if $redis.get('apps_count') == nil
-        $redis.set('apps_count', ChatApp.count() + 1)
-      end
-      params[:app][:token] = $redis.get('apps_count').to_i
-      $redis.incr('apps_count')
-      params[:app][:chats_count] = 0
-      messaging_service.publish(params[:app].to_json)
-      json_response(params[:app], :created)
+      application = generate_application_object params
+
+      messaging_service.publish(application.to_json)
+      json_response(application, :created)
     else
       json_response(nil, :created)
-
     end
-
-  end
-
-  def validate_create_request(params)
-    return params != nil && params[:app] != nil && params[:app][:name] != nil
   end
 
 
@@ -48,11 +38,30 @@ class ChatAppController < ApplicationController
 
   private
 
+  def get_apps_count
+    if $redis.get('apps_count') == nil
+      $redis.set('apps_count', ChatApp.count())
+    end
+    $redis.incr('apps_count')
+    $redis.get('apps_count').to_i
+  end
+
   def chat_app_params
     # whitelist params
     if params and params[:app]
       params.require(:app).permit(:name, :token, :chats_count)
     end
+  end
+
+  def generate_application_object (params)
+    params[:app][:token] = get_apps_count
+    params[:app][:chats_count] = 0
+    params[:app]
+  end
+
+
+  def validate_create_request(params)
+    return params != nil && params[:app] != nil && params[:app][:name] != nil
   end
 
   def set_chat_app
