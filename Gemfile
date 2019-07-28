@@ -12,6 +12,9 @@ gem 'puma', '~> 3.11'
 
 gem 'elasticsearch-model'
 gem 'elasticsearch-rails'
+gem 'sneakers'
+gem "bunny"
+gem 'redis'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'

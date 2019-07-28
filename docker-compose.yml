@@ -6,6 +6,8 @@ services:
     depends_on:
       - db
       - elasticsearch
+      - redis
+      - rabbitmq
     build: .
     ports:
       - "3000:3000"
@@ -18,6 +20,7 @@ services:
       - ".:/chat_system"
       - "./config/docker/database.yml:/chat-system/config/database.yml"
     tty: true
+
   db:
     image: mysql:5.7
     environment:
@@ -25,8 +28,31 @@ services:
       MYSQL_DATABASE: chat_system
     ports:
       - "3307:3306"
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
     hostname: elasticsearch
     ports:
       - "9200:9200"
+
+  rabbitmq:
+    image: rabbitmq:3.7.5-management
+    hostname: app-rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./data/rabbitmq:/var/lib/rabbitmq/mnesia/rabbit@app-rabbitmq:cached
+    environment:
+      RABBITMQ_ERLANG_COOKIE: 6085e2412b6fa88647466c6a81c0cea0
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
+      RABBITMQ_DEFAULT_VHOST: /
+  redis:
+    image: redis
+    container_name: redis
+    expose:
+      - 6379
+
+volumes:
+  redis:

@@ -115,16 +115,16 @@ RSpec.describe ChatController, type: :request do
         expect(response).to have_http_status(404)
       end
       it 'returns a validation failure message' do
-        expect(response.body).to match("not fond")
+        expect(response.body).to match("Request Error")
       end
       it 'returns error request#1' do
         post "/chat/"
-        expect(response.body).to match("not fond")
+        expect(response.body).to match("Request Error")
         expect(response).to have_http_status(404)
       end
       it 'returns error request#2' do
         post "/chat/", params: {}
-        expect(response.body).to match("not fond")
+        expect(response.body).to match("Request Error")
         expect(response).to have_http_status(404)
       end
 

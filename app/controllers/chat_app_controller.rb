@@ -2,12 +2,24 @@ class ChatAppController < ApplicationController
 
   # POST /application
   def create
-    if params and params[:app]
-      params[:app][:token] = (ChatApp.all.count + 1)
+    if validate_create_request params
+      if $redis.get('apps_count') == nil
+        $redis.set('apps_count', ChatApp.count() + 1)
+      end
+      params[:app][:token] = $redis.get('apps_count').to_i
+      $redis.incr('apps_count')
       params[:app][:chats_count] = 0
+      messaging_service.publish(params[:app].to_json)
+      json_response(params[:app], :created)
+    else
+      json_response(nil, :created)
+
     end
-    @chat_app = ChatApp.create!(chat_app_params)
-    json_response(@chat_app, :created)
+
+  end
+
+  def validate_create_request(params)
+    return params != nil && params[:app] != nil && params[:app][:name] != nil
   end
 
 

@@ -54,13 +54,13 @@ RSpec.describe 'chat app api', type: :request do
         expect(response).to have_http_status(201)
       end
       it 'returns chat_app name, chats_count and token +1 after creation' do
-        expect(json['token']).to eq(@apps_number + 1)
+        expect(json['token']).to eq(@apps_number+1)
         expect(json['name']).to eq('app#1')
         expect(json['chats_count']).to eq(0)
       end
       it 'returns chat_app name, chats_count and token +2  after creating another app' do
         post "/application/", params: {app: {name: 'app#2'}}
-        expect(json['token']).to eq(@apps_number + 2)
+        expect(json['token']).to eq(@apps_number+2)
         expect(json['name']).to eq('app#2')
         expect(json['chats_count']).to eq(0)
       end
@@ -75,20 +75,20 @@ RSpec.describe 'chat app api', type: :request do
     context 'when the request is invalid' do
       before {post "/application/", params: {app: {}}}
       it 'returns status code 422' do
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(404)
       end
       it 'returns a validation failure message' do
-        expect(response.body).to match("Name can't be blank")
+        expect(response.body).to match("Request Error")
       end
       it 'returns error request#1' do
         post "/application/"
-        expect(response.body).to match("Validation failed: Name can't be blank, Token can't be blank")
-        expect(response).to have_http_status(422)
+        expect(response.body).to match("Request Error")
+        expect(response).to have_http_status(404)
       end
       it 'returns error request#2' do
         post "/application/", params: {}
-        expect(response.body).to match("Validation failed: Name can't be blank, Token can't be blank")
-        expect(response).to have_http_status(422)
+        expect(response.body).to match("Request Error")
+        expect(response).to have_http_status(404)
       end
     end
   end
