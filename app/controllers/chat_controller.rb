@@ -25,7 +25,10 @@ class ChatController < ApplicationController
   private
 
   def validate_create_request(params)
-    return params != nil && params[:chat] != nil && params[:chat][:app_token] != nil
+    return params != nil &&
+        params[:chat] != nil &&
+        params[:chat][:app_token] != nil &&
+        ChatApp.find_by(:token => params[:chat][:app_token]) != nil
   end
 
   def get_app_chats_count (params)

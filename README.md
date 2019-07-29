@@ -8,3 +8,11 @@
 - to run specs
     - ``docker exec -it chat_system_app_1 bash``
     - ``rspec``
+- Documentation: https://documenter.getpostman.com/view/54956/SVYkx2XW?version=latest
+
+##ToDo
+
+- Reject old requests by adding date/time to each request and reject any request with date/time older than the date/time in database.
+- Refactor create-and-queuing APIs to be in another service to be able to handle more requests.
+- Revisit specs to make sure all corner cases and bad requests are handle correctly.
+ 

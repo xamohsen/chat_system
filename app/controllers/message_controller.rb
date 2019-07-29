@@ -22,11 +22,10 @@ class MessageController < ApplicationController
   end
 
   def create
-    if params and params[:message]
-      params[:message][:message_number] = Message.last != nil ? (Message.last[:message_number] + 1) : 1
-      @message = Message.create!(message_params)
-      @message.chat.update(messages_count: (@message.chat[:messages_count] + 1))
-      json_response(@message, :created)
+    if validate_create_request params
+      message = generate_message_object params
+      messaging_service.publish({:data => message, :method => "create_message"}.to_json)
+      json_response(message, :created)
     else
       json_response(nil, 404)
     end
@@ -45,10 +44,35 @@ class MessageController < ApplicationController
     end
   end
 
+  private
+  def generate_message_object(params)
+    params[:message][:message_number] = get_chat_messages_count params
+    params[:message]
+  end
+  def get_chat_messages_count (params)
+    chat_messages_count = "app:#{params[:message][:app_token]}chat:#{params[:message][:chat_number]}"
+    if $redis.get chat_messages_count == nil
+      $redis.set chat_messages_count,
+                 Chat.find_by(:app_token => params[:message][:app_token],
+                              :chat_number => params[:message][:chat_number]
+                 ).messages_count
+    end
+    $redis.incr chat_messages_count
+    $redis.get(chat_messages_count).to_i
+  end
+
   def message_params
     # whitelist params
     if params and params[:message]
       params.require(:message).permit(:app_token, :chat_number, :message_number, :text)
     end
+  end
+
+  def validate_create_request(params)
+    return params != nil &&
+        params[:message] != nil &&
+        params[:message][:app_token] != nil &&
+        params[:message][:chat_number] != nil &&
+        params[:message][:text] != nil
   end
 end

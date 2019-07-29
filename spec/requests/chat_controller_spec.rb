@@ -129,7 +129,16 @@ RSpec.describe ChatController, type: :request do
         expect(response.body).to match("Request Error")
         expect(response).to have_http_status(404)
       end
-
+      it 'returns error request#3' do
+        post "/chat/", params: {chat:{app_token: 123}}
+        expect(response.body).to match("Request Error")
+        expect(response).to have_http_status(404)
+      end
+      it 'returns error request#5' do
+        post "/chat/", params: {chat:{app_token: 354345345}}
+        expect(response.body).to match("Request Error")
+        expect(response).to have_http_status(404)
+      end
     end
   end
 

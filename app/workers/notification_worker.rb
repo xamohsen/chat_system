@@ -9,11 +9,11 @@ class NotificationWorker
     begin
       message = JSON.parse(message)
       @data = message["data"]
-      app = send(message['method'])
-      puts "App:  ", app
+      data = send(message['method'])
+      puts "data:  ", data
     rescue Exception => e
       if retries < 10
-        puts "FAIL retry: #{retries} #{e}"
+        puts "FAIL retry: #{retries} #{e}, Message: #{message}"
         retries += 1
         retry
       else
@@ -33,6 +33,14 @@ class NotificationWorker
     app = ChatApp.find_by(:token => chat[:app_token])
     app.update(chats_count: app[:chats_count] + 1)
     chat
+  end
+
+  def create_message
+    message = Message.create @data
+    chat = Chat.find_by(:chat_number => message[:chat_number],
+                        :app_token => message[:app_token])
+    chat.update(messages_count: chat[:messages_count] + 1)
+    message
   end
 
 end
