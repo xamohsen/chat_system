@@ -17,3 +17,4 @@
 - Add update APIs to the queue.
 - Create queue per API for example create a queue for create app API and another one for create chat API.
 - Revisit specs to make sure all corner cases and bad requests are handle correctly.
+- Refactor the API URL structure, the current one is following the one in the docs but I don't think it's the best we can do.
