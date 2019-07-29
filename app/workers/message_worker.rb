@@ -1,8 +1,8 @@
 require 'json'
 
-class NotificationWorker
+class MessageWorker
   include Sneakers::Worker
-  from_queue "notification"
+  from_queue "message"
 
   def work(message)
     retries = 0
@@ -10,7 +10,7 @@ class NotificationWorker
       message = JSON.parse(message)
       @data = message["data"]
       data = send(message['method'])
-      puts "data:  ", data
+      puts "Task Done", data
     rescue Exception => e
       if retries < 10
         puts "FAIL retry: #{retries} #{e}, Message: #{message}"

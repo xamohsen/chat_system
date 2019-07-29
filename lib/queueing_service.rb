@@ -12,7 +12,7 @@ class QueueingService
   end
 
   def publish(message)
-    start_exchange.publish(message, :routing_key => 'notification')
+    start_exchange.publish(message, :routing_key => 'message')
   end
 
 
